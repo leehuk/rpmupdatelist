@@ -17,7 +17,9 @@ import yum
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', action='store_true', dest='cache', help='Do not refresh metadata cache.')
+    parser.add_argument('-c', action='store_true', dest='cache', help='Do not refresh metadata cache')
+    parser.add_argument('--enablerepo', action='append', dest='enablerepo', help='Enable repositories (wildcards permitted)')
+    parser.add_argument('--disablerepo', action='append', dest='disablerepo', help='Disable repositories (wildcards permitted)')
     args = parser.parse_args()
     return args
 
@@ -27,6 +29,14 @@ def get_rpm_updates(args):
     yb.preconf.errorlevel=0
 
     yb.conf.cache = os.geteuid() != 0
+
+    if args.disablerepo:
+        for name in args.disablerepo:
+            yb.repos.disableRepo(name)
+
+    if args.enablerepo:
+        for name in args.enablerepo:
+            yb.repos.enableRepo(name)
 
     if not args.cache:
         yb.cleanMetadata()
