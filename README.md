@@ -2,6 +2,9 @@
 Interrogates the system via the yum api to determine what updates
 are available from the given repositories, returning data in JSON.
 
+## Build Status
+[![Build Status](https://travis-ci.org/leehuk/rpmupdatelist.svg?branch=master)](https://travis-ci.org/leehuk/rpmupdatelist)
+
 ## Usage
 ```
 usage: rpmupdatelist.py [-h] [-c] [--enablerepo ENABLEREPO]
