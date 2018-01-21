@@ -1,0 +1,9 @@
+FROM leehuk/rpmtestrepo:centos7
+LABEL maintainer="lee@leeh.uk"
+
+RUN yum install -y python-argparse pytest
+RUN yum install -y rpmtestpackage-1.0-1
+
+RUN mkdir -p /tmp/testsuite
+COPY rpmupdatelist.py /tmp/testsuite/
+COPY test_rpmupdatelist.py /tmp/testsuite/
