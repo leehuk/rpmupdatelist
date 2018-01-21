@@ -5,6 +5,8 @@ services:
 
 before_install:
     - docker build -t leehuk/rpmupdatelist:c6-test -f Dockerfile.centos6 .
+    - docker build -t leehuk/rpmupdatelist:c7-test -f Dockerfile.centos7 .
 
 script:
     - docker run leehuk/rpmupdatelist:c6-test /bin/bash -c "py.test /tmp/testsuite/"
+    - docker run leehuk/rpmupdatelist:c7-test /bin/bash -c "py.test /tmp/testsuite/"
