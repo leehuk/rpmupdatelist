@@ -4,7 +4,6 @@
 #	Lists available updates from enabled repos in JSON form
 #
 # https://github.com/leehuk/rpmupdatelist
-#
 # Copyright (C) 2017-2018 Lee H <lee@leeh.uk>
 
 from __future__ import print_function
