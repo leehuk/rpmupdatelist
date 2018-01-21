@@ -1,0 +1,10 @@
+sudo: required
+language: python
+services:
+    - docker
+
+before_install:
+    - docker build -t leehuk/rpmupdatelist:c6-test -f Dockerfile.centos6 .
+
+script:
+    - docker run leehuk/rpmupdatelist:c6-test /bin/bash -c "py.test /tmp/testsuite/"
