@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 #
 # rpmupdatelist.py
-#	Lists available updates from enabled repos
+#	Lists available updates from enabled repos in JSON form
 #
 # https://github.com/leehuk/rpmupdatelist
-#
-# Copyright (C) 2017 Lee H <lee@leeh.uk>
-# Released under the BSD 3-Clause License
+# Copyright (C) 2017-2018 Lee H <lee@leeh.uk>
 
 from __future__ import print_function
 
@@ -16,29 +14,48 @@ import os
 import sys
 import yum
 
-yb = yum.YumBase()
-yb.preconf.debuglevel=0
-yb.preconf.errorlevel=0
+def parse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', action='store_true', dest='cache', help='Do not refresh metadata cache')
+    parser.add_argument('--enablerepo', action='append', dest='enablerepo', help='Enable repositories (wildcards permitted)')
+    parser.add_argument('--disablerepo', action='append', dest='disablerepo', help='Disable repositories (wildcards permitted)')
+    args = parser.parse_args()
+    return args
 
-yb.conf.cache = os.geteuid() != 0
+def get_rpm_updates(args):
+    yb = yum.YumBase()
+    yb.preconf.debuglevel=0
+    yb.preconf.errorlevel=0
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-c', action='store_true', dest='cache', help='Do not forcibly refresh metadata cache.')
-args = parser.parse_args()
+    yb.conf.cache = os.geteuid() != 0
 
-if not args.cache:
-	yb.cleanMetadata()
-	yb.cleanSqlite()
+    if hasattr(args, "disablerepo"):
+        for name in args.disablerepo:
+            yb.repos.disableRepo(name)
 
-pkgupdates = []
+    if hasattr(args, "enablerepo"):
+        for name in args.enablerepo:
+            yb.repos.enableRepo(name)
 
-pkglist = yb.doPackageLists('updates')
-if pkglist.updates:
-	for pkg in sorted(pkglist.updates):
-		pkginfo = {}
-		pkginfo['name'] = pkg.name
-		pkginfo['version'] = pkg.printVer()
-		pkginfo['repo'] = pkg.repoid
-		pkgupdates.append(pkginfo)
+    if hasattr(args, "cache"):
+        yb.cleanMetadata()
+        yb.cleanSqlite()
 
-print(json.dumps(pkgupdates))
+    pkgupdates = []
+
+    pkglist = yb.doPackageLists('updates')
+    if pkglist.updates:
+        for pkg in sorted(pkglist.updates):
+            pkginfo = {}
+            pkginfo['name'] = pkg.name
+            pkginfo['version'] = pkg.printVer()
+            pkginfo['repo'] = pkg.repoid
+            pkgupdates.append(pkginfo)
+
+    return pkgupdates
+
+def print_rpm_updates(pkgupdates):
+    print(json.dumps(pkgupdates))
+
+if __name__ == '__main__':
+    print_rpm_updates(get_rpm_updates(parse()))
