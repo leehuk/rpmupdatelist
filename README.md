@@ -24,7 +24,6 @@ optional arguments:
         "name":"packagename",
         "version":"packageversion"
     }
-
 ]
 ```
 
@@ -33,3 +32,13 @@ optional arguments:
 [root@26514eb7ad0c rpmupdatelist]# ./rpmupdatelist.py --disablerepo=* --enablerepo=rpmtestrepo-1.1
 [{"repo": "rpmtestrepo-1.1", "version": "1.1-1", "name": "rpmtestpackage"}]
 ```
+
+## Test Suite
+The test suite inside this needs to operate against a well-known server
+configuration, so uses the Docker images from rpmtestrepo:
+https://github.com/leehuk/rpmtestrepo
+
+These are used as a basis by the test framework to install rpmtestpackage-1.0 then
+verify there are appropriate updates.
+
+Test status can be found on Travis: https://travis-ci.org/leehuk/rpmupdatelist
