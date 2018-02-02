@@ -29,15 +29,15 @@ def get_rpm_updates(args):
 
     yb.conf.cache = os.geteuid() != 0
 
-    if hasattr(args, "disablerepo"):
+    if hasattr(args, "disablerepo") and args.disablerepo != None:
         for name in args.disablerepo:
             yb.repos.disableRepo(name)
 
-    if hasattr(args, "enablerepo"):
+    if hasattr(args, "enablerepo") and args.enablerepo != None:
         for name in args.enablerepo:
             yb.repos.enableRepo(name)
 
-    if hasattr(args, "cache"):
+    if hasattr(args, "cache") and args.cache != None:
         yb.cleanMetadata()
         yb.cleanSqlite()
 
